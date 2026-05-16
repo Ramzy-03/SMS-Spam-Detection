@@ -1,138 +1,133 @@
-# 🔍 Spam Detection Lab: Transformer-Based Text Classification
+# 📱 SMS Spam Detection — Faster, Safer, Smarter
 
-A high-performance, multi-model spam detection system powered by **Transformer Encoders**. This project features a custom-built Transformer architecture implemented in PyTorch, trained on diverse datasets (SMS, Enron Email, and Combined sets), and served through a modern, dark-themed Streamlit dashboard.
+[![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)](https://www.python.org/)
+[![Streamlit](https://img.shields.io/badge/Streamlit-App-FF4B4B.svg)](https://streamlit.io/)
+[![Scikit-Learn](https://img.shields.io/badge/Scikit--Learn-ML-orange.svg)](https://scikit-learn.org/)
+
+A professional, end-to-end machine learning solution for detecting SMS spam. This project features a robust TF-IDF + Linear SVC pipeline with a polished Streamlit dashboard for real-time inference and data visualization.
 
 ---
 
 ## 🚀 Key Features
 
--   **Multi-Model Intelligence**: Simultaneously run and compare predictions from three distinct models:
-    -   `sms_model`: Optimized for short-form SMS spam.
-    -   `youtube_model`: Trained on the Enron dataset (renamed for specific lab context).
-    -   `reviews_model`: Trained on a broad combined dataset.
--   **Custom Transformer Architecture**: Built from scratch using `nn.TransformerEncoderLayer` for efficient sequential dependency capture.
--   **Advanced Dashboard**: A professional Streamlit UI with:
-    -   **Real-time Inference**: Analyze any message instantly.
-    -   **Artefact Viewer**: Inspect training loss/accuracy curves and confusion matrices directly.
-    -   **Performance Metrics**: Live view of F1-scores, accuracy, and dataset distribution.
--   **Automated Pipeline**: End-to-end training script that handles cleaning, vocabulary building, training, and artefact export.
+- **Real-time Classification:** Instantly detect if a message is `SPAM` or `HAM` with confidence scoring.
+- **Advanced NLP Pipeline:** Utilizes NLTK for text preprocessing (cleaning, normalization) and Scikit-Learn for feature extraction (TF-IDF).
+- **Interactive Dashboard:** A modern UI built with Streamlit featuring:
+  - Custom CSS animations and "shimmer" effects.
+  - Dataset statistics and distribution metrics.
+  - Explanable AI details (showing cleaned text and probability).
+  - Pre-loaded example messages for testing.
+- **Comprehensive Analysis:** The project includes a Jupyter notebook for EDA, model benchmarking, and evaluation.
+- **High Performance:** Achieved **96.4% Accuracy** and **0.91 F1-Score** using Linear SVC.
 
 ---
 
-## 🛠️ Technical Architecture
+## 📊 Model Performance
 
-### 🧠 Model Specifications
-The core is a **Transformer Classifier** designed for text classification:
--   **Embedding Dimension**: 128
--   **Attention Heads**: 4
--   **Encoder Layers**: 3
--   **Max Sequence Length**: 60 tokens
--   **Vocab Size**: ~12,000 tokens (dynamic per dataset)
--   **Optimizer**: Adam (`lr=2e-4`)
--   **Loss Function**: Cross-Entropy Loss
+After benchmarking multiple models (Logistic Regression, Naive Bayes, Linear SVC, and Random Forest), **Linear SVC** was selected as the champion model.
 
-```python
-# Model Architecture Overview
-TransformerClassifier(
-  (embedding): Embedding(vocab_size, 128)
-  (transformer): TransformerEncoder(
-    (layers): ModuleList(
-      (0-2): 3 x TransformerEncoderLayer(d_model=128, nhead=4, dropout=0.3)
-    )
-  )
-  (fc): Linear(in_features=128, out_features=2)
-)
-```
+| Metric | Value |
+| :--- | :--- |
+| **Accuracy** | 96.41% |
+| **F1-Score** | 0.9146 |
+| **Dataset Size** | 10,178 examples |
+| **Spam/Ham Ratio** | 22% / 78% |
 
-### 📊 Training Pipeline
-1.  **Preprocessing**: Text cleaning (lowercase, punctuation removal, digit removal).
-2.  **Tokenization**: Custom frequency-based vocabulary building.
-3.  **Dataset**: PyTorch `DataLoader` with 80/20 train-test split.
-4.  **Evaluation**: Real-time validation accuracy tracking and automated report generation (`classification_report`).
+> **Visualizations:** Detailed plots for ROC Curves, Confusion Matrices, and EDA are available in the [`results/`](./results/) directory.
 
 ---
 
-## 📁 Project Structure
+## 📂 Project Structure
 
 ```text
-.
-├── app.py                      # Streamlit dashboard & Inference logic
-├── sms_spam_detection.ipynb    # Training pipeline & Model definition
-├── Dataset/                    # Raw CSV data
+SpamDetection/
+├── app.py                # Main Streamlit application
+├── sms_spam_detection.ipynb # Research, EDA, and Model Training notebook
+├── requirements.txt      # Python dependencies
+├── run.bat               # Shortcut to launch the app
+├── Dataset/              # Raw data files
+│   ├── spam.csv          # Primary SMS dataset
 │   ├── combined_dataset.csv
-│   ├── enron_spam_data.csv
-│   └── spam.csv
-├── Saved_model/                # Trained PyTorch checkpoints (.pt)
-│   ├── sms_model.pt
-│   ├── youtube_model.pt
-│   └── reviews_model.pt
-├── results/                    # Training artefacts
-│   ├── *_accuracy.png          # Learning curves
-│   ├── *_cm.png                # Confusion matrices
-│   ├── *_report.txt            # Precision/Recall reports
-│   └── *_vocab.pkl             # Serialized vocabularies
-└── requirements.txt            # Dependency list
+│   └── enron_spam_data.csv
+├── Saved_model/          # Serialized model artifacts
+│   ├── spam_pipeline.pkl # Trained TF-IDF + Classifier pipeline
+│   └── label_encoder.pkl # Label encoder for spam/ham
+├── results/              # Evaluation plots and charts
+│   ├── confusion_matrices.png
+│   ├── eda_plot.png
+│   └── roc.png
+└── README.md             # This file
 ```
 
 ---
 
-## ⚙️ Installation & Setup
+## 🛠️ Installation & Setup
 
-### 1. Clone the Repository
+### 1. Clone the repository
 ```bash
-git clone https://github.com/your-username/sms-detector-transformer.git
-cd sms-detector-transformer
+git clone https://github.com/YourUsername/SMS-Spam-Detection.git
+cd SMS-Spam-Detection
 ```
 
 ### 2. Install Dependencies
-Ensure you have Python 3.9+ installed.
+It is recommended to use a virtual environment.
 ```bash
-pip install torch pandas streamlit matplotlib seaborn scikit-learn
+pip install -r requirements.txt
 ```
 
-### 3. Run the Dashboard
+### 3. Download NLTK Data
+The application requires `stopwords` and `punkt` from NLTK. These are automatically handled in the notebook, but you can manually download them:
+```python
+import nltk
+nltk.download('stopwords')
+nltk.download('punkt')
+```
+
+---
+
+## 🎮 How to Run
+
+### Option A: Run the Streamlit App
+Launch the interactive dashboard to test your own messages:
 ```bash
 streamlit run app.py
 ```
-
----
-
-## 📈 Model Performance
-
-Based on the training reports, the models achieve high reliability across different domains:
-
-| Model | Accuracy | Target Domain |
-| :--- | :--- | :--- |
-| **SMS** | ~93.8% | Mobile Text Messages |
-| **YouTube** | ~97.2% | Email/Enron Dataset |
-| **Reviews** | ~96.1% | Combined General Text |
-
-*Detailed metrics (Precision, Recall, F1) can be viewed in the `results/` folder or via the Dashboard's "Show Panels" feature.*
-
----
-
-## 🛠️ Usage
-
-### Training New Models
-Open `sms_spam_detection.ipynb` in Jupyter or VS Code and run the `run_pipeline` function:
-```python
-run_pipeline("path/to/data.csv", "text_column", "label_column", "model_name")
+Or simply run the provided batch file (Windows):
+```bash
+run.bat
 ```
-This will automatically save the model to `Saved_model/` and all plots/vocab to `results/`.
 
-### Testing Messages
-1. Launch the Streamlit app.
-2. Select your preferred model from the sidebar.
-3. Type a message or choose an example from the dropdown.
-4. Click **Analyze message** to see probabilistic results and confidence scores.
+### Option B: Explore the Research
+Open the Jupyter notebook to see the data analysis, model comparison, and training process:
+```bash
+jupyter notebook sms_spam_detection.ipynb
+```
+
+---
+
+## 🧠 Technical Workflow
+
+1.  **Preprocessing:**
+    - Text normalization (lowercase).
+    - Removal of URLs, special characters, and punctuation.
+    - Tokenization and stop-word removal.
+2.  **Vectorization:**
+    - TF-IDF (Term Frequency-Inverse Document Frequency) transforms text into a high-dimensional sparse matrix.
+3.  **Classification:**
+    - Linear SVC (Support Vector Classification) predicts the final label.
+4.  **Deployment:**
+    - The pipeline is serialized using `joblib` for efficient loading in the Streamlit app.
 
 ---
 
-## 🛡️ License
-This project is developed for educational purposes as part of the AI-based Spam Detection Lab.
-
-## 👥 Contributors
-- **Romio** - Lead Developer & Data Scientist
+## 🤝 Contributing
+Contributions are welcome! Please feel free to submit a Pull Request.
 
 ---
-*Built with ❤️ using PyTorch and Streamlit.*
+
+## 📜 License
+Distributed under the MIT License. See `LICENSE` for more information.
+
+---
+
+**Built with ❤️ for NLP enthusiasts.**
